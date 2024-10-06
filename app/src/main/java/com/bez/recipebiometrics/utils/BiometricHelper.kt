@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 object BiometricHelper {
+
     fun authenticate(context: Context, onSuccess: () -> Unit, onFailure: () -> Unit) {
         val biometricPrompt = BiometricPrompt(
             context as FragmentActivity,

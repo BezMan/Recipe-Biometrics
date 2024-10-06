@@ -1,7 +1,7 @@
 package com.bez.recipebiometrics.ui.screens
 
 import android.content.Context
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +41,7 @@ fun RecipeListScreen(navController: NavHostController, viewModel: RecipeViewMode
                         navController.navigate(Screen.RecipeDetails.createRoute(recipe.id))
                     },
                     onFailure = {
-                        // Handle failure case
+                        Toast.makeText(context, "retry biometrics to enter recipe details", Toast.LENGTH_LONG).show()
                     }
                 )
             }

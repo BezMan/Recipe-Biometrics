@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.bez.recipebiometrics.data.model.Recipe
 import com.bez.recipebiometrics.ui.viewmodel.RecipeViewModel
 import com.bez.recipebiometrics.utils.BiometricHelper
@@ -61,7 +60,6 @@ fun RecipeDetailsScreen(
         Text(
             text = if (isAuthenticated) "Recipe not found" else "Authenticating...",
             fontSize = 18.sp,
-//            modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp)
         )
     }
 }

@@ -10,8 +10,8 @@ import com.bez.recipebiometrics.ui.screens.RecipeDetailsScreen
 import com.bez.recipebiometrics.ui.screens.RecipeListScreen
 
 sealed class Screen(val route: String) {
-    object RecipeList : Screen("recipe_list")
-    object RecipeDetails : Screen("recipe_details/{id}") {
+    data object RecipeList : Screen("recipe_list")
+    data object RecipeDetails : Screen("recipe_details/{id}") {
         fun createRoute(id: String) = "recipe_details/$id"
     }
 }
