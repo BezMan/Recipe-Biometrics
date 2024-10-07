@@ -3,6 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- Prevent installation on devices without biometric hardware -->
+    <uses-feature
+        android:name="android.hardware.biometrics"
+        android:required="true" />
+     <uses-feature
+        android:name="android.hardware.fingerprint"
+        android:required="true" />
 
     <application
         android:name=".MyApplication"
@@ -13,12 +22,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RecipeBiometrics"
-        tools:targetApi="31">
+        android:theme="@style/Theme.RecipeBiometrics">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.RecipeBiometrics">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

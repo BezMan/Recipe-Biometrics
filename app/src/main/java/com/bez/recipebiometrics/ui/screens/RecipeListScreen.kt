@@ -28,7 +28,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bez.recipebiometrics.data.model.Recipe
 import com.bez.recipebiometrics.ui.navigation.Screen
-import com.bez.recipebiometrics.ui.state.UiState
+import com.bez.recipebiometrics.domain.common.UiState
 import com.bez.recipebiometrics.ui.viewmodel.RecipeViewModel
 import com.bez.recipebiometrics.utils.BiometricHelper
 

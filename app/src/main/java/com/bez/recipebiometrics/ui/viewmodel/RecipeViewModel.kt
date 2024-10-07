@@ -3,8 +3,8 @@ package com.bez.recipebiometrics.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bez.recipebiometrics.data.model.Recipe
-import com.bez.recipebiometrics.data.repo.RecipeRepository
-import com.bez.recipebiometrics.ui.state.UiState
+import com.bez.recipebiometrics.domain.common.UiState
+import com.bez.recipebiometrics.domain.usecase.GetRecipesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeViewModel @Inject constructor(
-    private val repository: RecipeRepository
+    private val getRecipesUseCase: GetRecipesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState<List<Recipe>>>(UiState.Loading)
@@ -27,7 +27,7 @@ class RecipeViewModel @Inject constructor(
     private fun fetchRecipes() {
         viewModelScope.launch {
             // Collect the flow from the repository
-            repository.getRecipes()
+            getRecipesUseCase()
                 .catch { e ->
                     // Handle error by updating UiState
                     _uiState.value = UiState.Error(e.localizedMessage ?: "An error occurred")

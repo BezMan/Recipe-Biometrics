@@ -1,4 +1,4 @@
-package com.bez.recipebiometrics.ui.state
+package com.bez.recipebiometrics.domain.common
 
 sealed class UiState<out T> {
     data object Loading : UiState<Nothing>()

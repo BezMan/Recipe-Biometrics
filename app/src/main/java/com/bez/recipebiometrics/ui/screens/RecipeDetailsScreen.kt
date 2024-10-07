@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.bez.recipebiometrics.data.model.Recipe
-import com.bez.recipebiometrics.ui.state.UiState
+import com.bez.recipebiometrics.domain.common.UiState
 import com.bez.recipebiometrics.ui.viewmodel.RecipeViewModel
 import com.bez.recipebiometrics.utils.BiometricHelper
 import com.bez.recipebiometrics.utils.EncryptionHelper
