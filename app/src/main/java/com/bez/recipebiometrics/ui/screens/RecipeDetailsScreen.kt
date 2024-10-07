@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -39,22 +41,10 @@ fun RecipeDetailsScreen(
     viewModel: RecipeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var isAuthenticated by remember { mutableStateOf(false) }
     var isDecrypted by remember { mutableStateOf(false) }
 
+    // Collect UI state from ViewModel
     val uiState by viewModel.uiState.collectAsState()
-
-    if (!isAuthenticated) {
-        BiometricHelper.authenticate(
-            context = context,
-            onSuccess = { isAuthenticated = true },
-            onFailure = { message ->
-                // Handle the failure (e.g., show a toast or navigate back)
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                navController.popBackStack() // Navigate back on failure
-            }
-        )
-    }
 
     when (uiState) {
         is UiState.Loading -> {
@@ -63,33 +53,41 @@ fun RecipeDetailsScreen(
         is UiState.Success -> {
             val recipe = (uiState as UiState.Success<List<Recipe>>).data.firstOrNull { it.id == id }
 
-            if (isAuthenticated && recipe != null) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Button(onClick = {
-                        BiometricHelper.authenticate(
-                            context = context,
-                            onSuccess = { isDecrypted = true },
-                            onFailure = { message ->
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                            }
-                        )
-                    }) {
-                        Text("Decrypt")
+            if (recipe != null) {
+                // Make the content scrollable using verticalScroll
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+
+                    // Conditionally show the decrypt button if the content is not decrypted yet
+                    if (!isDecrypted) {
+                        Button(onClick = {
+                            BiometricHelper.authenticate(
+                                context = context,
+                                onSuccess = { isDecrypted = true },
+                                onFailure = { message ->
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        }) {
+                            Text("Decrypt")
+                        }
                     }
 
+                    // Show the recipe details, passing the isDecrypted state
                     RecipeDetailsContent(recipe, isDecrypted)
                 }
-            } else if (!isAuthenticated) {
-                Text(text = "Authenticating...", fontSize = 18.sp)
             } else {
-                Text(text = "Recipe not found", fontSize = 18.sp)
+                Text(text = "Recipe not found", fontSize = 24.sp)
             }
         }
         is UiState.Error -> {
             Text(
                 text = (uiState as UiState.Error).message,
                 color = Color.Red,
-                fontSize = 18.sp,
+                fontSize = 24.sp,
                 modifier = Modifier.fillMaxSize()
             )
         }
