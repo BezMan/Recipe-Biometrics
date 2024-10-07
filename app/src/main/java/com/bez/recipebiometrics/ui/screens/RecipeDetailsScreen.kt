@@ -60,7 +60,6 @@ fun RecipeDetailsScreen(
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-
                     // Conditionally show the decrypt button if the content is not decrypted yet
                     if (!isDecrypted) {
                         Button(onClick = {
@@ -96,11 +95,19 @@ fun RecipeDetailsScreen(
 
 @Composable
 fun RecipeDetailsContent(recipe: Recipe, isDecrypted: Boolean) {
+    // Encrypt the text only once when the recipe is initialized
     val encryptedName = remember { EncryptionHelper.encrypt(recipe.name) }
     val encryptedCalories = remember { EncryptionHelper.encrypt(recipe.calories) }
     val encryptedCarbos = remember { EncryptionHelper.encrypt(recipe.carbos) }
     val encryptedFats = remember { EncryptionHelper.encrypt(recipe.fats) }
     val encryptedDescription = remember { EncryptionHelper.encrypt(recipe.description) }
+
+    // Use remember to avoid decrypting repeatedly when isDecrypted changes
+    val decryptedName = remember { EncryptionHelper.decrypt(encryptedName) }
+    val decryptedCalories = remember { EncryptionHelper.decrypt(encryptedCalories) }
+    val decryptedCarbos = remember { EncryptionHelper.decrypt(encryptedCarbos) }
+    val decryptedFats = remember { EncryptionHelper.decrypt(encryptedFats) }
+    val decryptedDescription = remember { EncryptionHelper.decrypt(encryptedDescription) }
 
     Column(
         modifier = Modifier
@@ -116,13 +123,13 @@ fun RecipeDetailsContent(recipe: Recipe, isDecrypted: Boolean) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Decrypt or show encrypted text based on isDecrypted state
-        Text(text = if (isDecrypted) recipe.name else encryptedName, style = MaterialTheme.typography.bodySmall)
+        // Show decrypted or encrypted text based on isDecrypted state
+        Text(text = if (isDecrypted) decryptedName else encryptedName)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = if (isDecrypted) "Calories: ${recipe.calories}" else "Calories: $encryptedCalories")
-        Text(text = if (isDecrypted) "Carbos: ${recipe.carbos}" else "Carbos: $encryptedCarbos")
-        Text(text = if (isDecrypted) "Fats: ${recipe.fats}" else "Fats: $encryptedFats")
+        Text(text = if (isDecrypted) "Calories: $decryptedCalories" else "Calories: $encryptedCalories")
+        Text(text = if (isDecrypted) "Carbos: $decryptedCarbos" else "Carbos: $encryptedCarbos")
+        Text(text = if (isDecrypted) "Fats: $decryptedFats" else "Fats: $encryptedFats")
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = if (isDecrypted) recipe.description else encryptedDescription)
+        Text(text = if (isDecrypted) decryptedDescription else encryptedDescription)
     }
 }
