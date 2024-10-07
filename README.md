@@ -4,6 +4,7 @@
 
 ### key points:
 
+- Developed app with scalable architecture and package structure. 
 - Retrofit as Http client
 - using Compose Navigation between screens passing recipe id.
 - mutual VM for both screens, as they share the same repo.
