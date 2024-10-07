@@ -27,8 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.bez.recipebiometrics.data.model.Recipe
-import com.bez.recipebiometrics.ui.navigation.Screen
 import com.bez.recipebiometrics.domain.common.UiState
+import com.bez.recipebiometrics.ui.navigation.Screen
 import com.bez.recipebiometrics.ui.viewmodel.RecipeViewModel
 import com.bez.recipebiometrics.utils.BiometricHelper
 
@@ -39,11 +39,9 @@ fun RecipeListScreen(navController: NavController) {
 
     when (uiState) {
         is UiState.Loading -> {
-            // Show loading progress indicator
             CircularProgressIndicator(modifier = Modifier.fillMaxSize())
         }
         is UiState.Success -> {
-            // Show recipe list once data is loaded
             val recipes = (uiState as UiState.Success<List<Recipe>>).data
             LazyColumn {
                 items(recipes) { recipe ->
@@ -53,8 +51,8 @@ fun RecipeListScreen(navController: NavController) {
                             onSuccess = {
                                 navController.navigate(Screen.RecipeDetails.createRoute(recipe.id))
                             },
-                            onFailure = {
-                                Toast.makeText(context, "retry biometrics to enter recipe details", Toast.LENGTH_LONG).show()
+                            onFailure = { message ->
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                             }
                         )
                     }
@@ -62,7 +60,6 @@ fun RecipeListScreen(navController: NavController) {
             }
         }
         is UiState.Error -> {
-            // Show error message when an error occurs
             Text(
                 text = (uiState as UiState.Error).message,
                 modifier = Modifier.fillMaxSize(),

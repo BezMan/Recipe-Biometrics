@@ -1,5 +1,6 @@
 package com.bez.recipebiometrics.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,44 +40,43 @@ fun RecipeDetailsScreen(
 ) {
     val context = LocalContext.current
     var isAuthenticated by remember { mutableStateOf(false) }
-    var isDecrypted by remember { mutableStateOf(false) }  // Tracks if text is decrypted
+    var isDecrypted by remember { mutableStateOf(false) }
 
-    // Collect the recipe data from ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
-    // Handle biometric authentication on entering the screen
     if (!isAuthenticated) {
         BiometricHelper.authenticate(
             context = context,
             onSuccess = { isAuthenticated = true },
-            onFailure = { /* handle failure (e.g. navigate back) */ }
+            onFailure = { message ->
+                // Handle the failure (e.g., show a toast or navigate back)
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                navController.popBackStack() // Navigate back on failure
+            }
         )
     }
 
     when (uiState) {
         is UiState.Loading -> {
-            // Show loading while fetching the recipe
             CircularProgressIndicator(modifier = Modifier.fillMaxSize())
         }
-
         is UiState.Success -> {
             val recipe = (uiState as UiState.Success<List<Recipe>>).data.firstOrNull { it.id == id }
 
             if (isAuthenticated && recipe != null) {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    // Decrypt button at the top
                     Button(onClick = {
-                        // Re-authenticate and decrypt the text if successful
                         BiometricHelper.authenticate(
                             context = context,
                             onSuccess = { isDecrypted = true },
-                            onFailure = { /* handle failure (e.g. show error) */ }
+                            onFailure = { message ->
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                            }
                         )
                     }) {
                         Text("Decrypt")
                     }
 
-                    // Show recipe details (encrypted/decrypted based on isDecrypted state)
                     RecipeDetailsContent(recipe, isDecrypted)
                 }
             } else if (!isAuthenticated) {
@@ -85,9 +85,7 @@ fun RecipeDetailsScreen(
                 Text(text = "Recipe not found", fontSize = 18.sp)
             }
         }
-
         is UiState.Error -> {
-            // Show error if API call fails
             Text(
                 text = (uiState as UiState.Error).message,
                 color = Color.Red,
