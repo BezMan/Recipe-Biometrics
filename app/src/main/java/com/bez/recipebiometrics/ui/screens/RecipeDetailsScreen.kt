@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -62,16 +63,27 @@ fun RecipeDetailsScreen(
                 ) {
                     // Conditionally show the decrypt button if the content is not decrypted yet
                     if (!isDecrypted) {
-                        Button(onClick = {
-                            BiometricHelper.authenticate(
-                                context = context,
-                                onSuccess = { isDecrypted = true },
-                                onFailure = { message ->
-                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                                }
+                        Button(
+                            onClick = {
+                                BiometricHelper.authenticate(
+                                    context = context,
+                                    onSuccess = { isDecrypted = true },
+                                    onFailure = { message ->
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                                    }
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)  // Apply 20dp margin
+                        ) {
+                            Text(
+                                text = "Decrypt",
+                                fontSize = 18.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center  // Center the text in the button
                             )
-                        }) {
-                            Text("Decrypt")
                         }
                     }
 
